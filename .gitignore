@@ -1,0 +1,7 @@
+# Jangan commit file credentials
+*.json
+
+# Python cache
+__pycache__/
+*.pyc
+.env
