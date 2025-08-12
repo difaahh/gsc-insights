@@ -84,5 +84,5 @@ df_merge = df_insight.merge(
 df_merge.drop(columns=["Page"], inplace=True)
 
 # ===== 5. Simpan CSV Gabungan =====
-df_merge.to_csv("gsc_full.csv", index=False)
+df_merge.head(5000).to_csv("gsc_full.csv", index=False)
 print("✅ Data mentah + insight berhasil digabung ke gsc_full.csv")
