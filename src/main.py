@@ -67,7 +67,7 @@ for _, row in df.iterrows():
         [row['Page'], row['Query'], "Konten", content[0], content[1], content[2]],
     ])
 
-df_insight = pd.DataFrame(insight_data, columns=["Halaman", "Kueri", "Kategori", "Rekomendasi", "Tingkat Kesulitan", "Status"])
+df_insight = pd.DataFrame(insight_data, columns=["Landing Page", "Query", "Kategori", "Rekomendasi", "Tingkat Kesulitan", "Status"])
 
 # ===== 4. Simpan CSV =====
 #df_insight = df_insight.head(3000)  # cuma ambil 1000 baris teratas
