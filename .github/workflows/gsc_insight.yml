@@ -41,7 +41,7 @@ jobs:
 
     - name: Commit CSV files (if changed)
       run: |
-        git add gsc_data.csv gsc_insights.csv || true
+        git add gsc_full.csv || true
         git commit -m "Auto update GSC insights [skip ci]" || echo "No changes to commit"
 
     - name: Pull remote changes and rebase
