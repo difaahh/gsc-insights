@@ -21,7 +21,7 @@ site_url = 'https://flashcomindonesia.com/'  # Website target
 
 request = {
     'startDate': '2024-03-22',
-    'endDate': '2025-08-11',
+    'endDate': '2025-08-12', 
     'dimensions': ['date', 'page', 'query'],  # tambahkan 'date'
     'rowLimit': 6000
 }
@@ -67,12 +67,22 @@ for _, row in df.iterrows():
         [row['Page'], row['Query'], "Konten", content[0], content[1], content[2]],
     ])
 
-df_insight = pd.DataFrame(insight_data, columns=["Landing Page", "Query", "Kategori", "Rekomendasi", "Tingkat Kesulitan", "Status"])
+df_insight = pd.DataFrame(
+    insight_data, 
+    columns=["Landing Page", "Query", "Kategori", "Rekomendasi", "Tingkat Kesulitan", "Status"]
+)
 
-# ===== 4. Simpan CSV =====
-#df_insight = df_insight.head(3000)  # cuma ambil 1000 baris teratas
-#df_insight.to_csv('gsc_insights.csv', index=False)
+# ===== 4. Gabungkan Data Mentah + Insight =====
+df_merge = df_insight.merge(
+    df,
+    left_on=["Landing Page", "Query"],
+    right_on=["Page", "Query"],
+    how="left"
+)
 
-df.to_csv("gsc_data.csv", index=False)
-df_insight.to_csv("gsc_insights.csv", index=False)
-print("✅ Data dan insight berhasil disimpan sebagai CSV lokal.")
+# Hapus kolom 'Page' duplikat
+df_merge.drop(columns=["Page"], inplace=True)
+
+# ===== 5. Simpan CSV Gabungan =====
+df_merge.to_csv("gsc_full.csv", index=False)
+print("✅ Data mentah + insight berhasil digabung ke gsc_full.csv")
