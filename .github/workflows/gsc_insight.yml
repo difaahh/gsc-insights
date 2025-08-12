@@ -3,7 +3,7 @@ name: GSC Insights Auto Update
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"  # Jalan tiap hari jam 00:00 UTC
+    - cron: "0 0 * * *"  # jalan sehari sekali, ubah bila perlu
 
 permissions:
   contents: write
@@ -13,8 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+    - name: Checkout repo (full history, needed for pull/rebase)
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0    # IMPORTANT: full history for rebase
+        persist-credentials: true
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -23,7 +26,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install pandas google-api-python-client google-auth google-auth-oauthlib gspread
+        pip install pandas google-api-python-client google-auth
 
     - name: Run Python script
       env:
@@ -31,13 +34,27 @@ jobs:
       run: |
         python src/main.py
 
-    - name: Setup Git for push
+    - name: Setup Git user
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Commit and push CSV
+    - name: Commit CSV files (if changed)
       run: |
-        git add gsc_data.csv gsc_insights.csv
+        git add gsc_data.csv gsc_insights.csv || true
         git commit -m "Auto update GSC insights [skip ci]" || echo "No changes to commit"
+
+    - name: Pull remote changes and rebase
+      run: |
+        # pastikan kita punya branch main
+        git checkout main || git checkout -b main
+        # ambil perubahan terbaru
+        git fetch origin main
+        # coba rebase; jika gagal, stop workflow dan laporkan
+        if git rev-parse --verify origin/main >/dev/null 2>&1; then
+          git pull --rebase origin main || (echo "ERROR: rebase failed — please resolve conflicts manually" && git --no-pager log --oneline -n 5 && exit 1)
+        fi
+
+    - name: Push changes
+      run: |
         git push origin main
