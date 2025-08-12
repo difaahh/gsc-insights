@@ -70,9 +70,9 @@ for _, row in df.iterrows():
 df_insight = pd.DataFrame(insight_data, columns=["Halaman", "Kueri", "Kategori", "Rekomendasi", "Tingkat Kesulitan", "Status"])
 
 # ===== 4. Simpan CSV =====
-df_insight = df_insight.head(3000)  # cuma ambil 1000 baris teratas
-df_insight.to_csv('gsc_insights.csv', index=False)
+#df_insight = df_insight.head(3000)  # cuma ambil 1000 baris teratas
+#df_insight.to_csv('gsc_insights.csv', index=False)
 
-#df.to_csv("gsc_data.csv", index=False)
-#df_insight.to_csv("gsc_insights.csv", index=False)
-#print("✅ Data dan insight berhasil disimpan sebagai CSV lokal.")
+df.to_csv("gsc_data.csv", index=False)
+df_insight.to_csv("gsc_insights.csv", index=False)
+print("✅ Data dan insight berhasil disimpan sebagai CSV lokal.")
